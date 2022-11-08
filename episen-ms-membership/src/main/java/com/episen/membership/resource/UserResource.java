@@ -22,55 +22,66 @@ public class UserResource {
 	
 	@PostMapping("auth")
 	public ResponseEntity<String> authenticate(@RequestBody User user){
-		
+
 		return new ResponseEntity<String>(userService.authenticate(user), HttpStatus.OK);
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<User>> getAll(){
-		
-		return new ResponseEntity<List<User>>(userService.getAll(), HttpStatus.OK);
-		
+	public ResponseEntity<List<User>> getAll(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
+
+		String[] bearerToken = token.split("Bearer ");
+		String jwtToken = bearerToken[1];
+		if(!userService.isTokenExpired(jwtToken) && userService.isAdmin(jwtToken)){
+			return new ResponseEntity<List<User>>(userService.getAll(), HttpStatus.OK);
+		}
+		return new ResponseEntity<List<User>>(HttpStatus.UNAUTHORIZED);
+
 	}
 	
 	// .../users/rkarra
 	@GetMapping("{username}")
-	public ResponseEntity<User> getOne(@PathVariable("username") String username) {
-		
-		return new ResponseEntity<User>(userService.getByUsername(username), HttpStatus.OK);
+	public ResponseEntity<User> getOne(@PathVariable("username") String username, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
+
+		String[] bearerToken = token.split("Bearer ");
+		String jwtToken = bearerToken[1];
+		if(!userService.isTokenExpired(jwtToken) && userService.isAdmin(jwtToken)){
+			return new ResponseEntity<User>(userService.getByUsername(username), HttpStatus.OK);
+		}
+		return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
 	}
 	
 	
 	@PostMapping
-	public ResponseEntity<Object> add(@RequestBody User user, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+	public ResponseEntity<User> add(@RequestBody User user, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
 
 		String[] bearerToken = token.split("Bearer ");
-		try {
-			String jwtToken = bearerToken[1];
-			boolean isAdmin = userService.isAdmin(jwtToken);
-			if(isAdmin){
-				userService.add(user);
-				return new ResponseEntity<Object>(user, HttpStatus.CREATED);
-			}
-			else{
-				return new ResponseEntity<Object>("Not admin user", HttpStatus.UNAUTHORIZED);
-			}
-		} catch (ParseException e) {
-			throw new RuntimeException(e);
+		String jwtToken = bearerToken[1];
+		if(!userService.isTokenExpired(jwtToken) && userService.isAdmin(jwtToken)){
+			userService.add(user);
+			return new ResponseEntity<User>(user, HttpStatus.CREATED);
 		}
+		return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
 	}
 	
 	@PutMapping
-	public void put(@RequestBody User user) {
-		// TODO Bloquer la modification que par Admin comme add
-		userService.update(user);
+	public void put(@RequestBody User user, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
+
+		String[] bearerToken = token.split("Bearer ");
+		String jwtToken = bearerToken[1];
+		if(!userService.isTokenExpired(jwtToken) && userService.isAdmin(jwtToken)){
+			userService.update(user);
+		}
 	}
 	
 	
 	@DeleteMapping("{username}")
-	public void delete(@PathVariable("username") String username) {
-		// TODO Bloquer la suppression que par Admin comme add
-		userService.delete(username);
+	public void delete(@PathVariable("username") String username, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
+
+		String[] bearerToken = token.split("Bearer ");
+		String jwtToken = bearerToken[1];
+		if(!userService.isTokenExpired(jwtToken) && userService.isAdmin(jwtToken)){
+			userService.delete(username);
+		}
 	}
 
 }

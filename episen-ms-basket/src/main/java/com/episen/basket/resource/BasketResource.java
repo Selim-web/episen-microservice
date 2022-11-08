@@ -23,21 +23,25 @@ public class BasketResource {
     @Autowired
     private ItemService itemService;
 
+
+    // METHODE JUST FOR ADMIN
     @GetMapping
     public ResponseEntity<List<Basket>> getAllBasket(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
-        // TODO Bloquer la methode juste pour l'admin
+
         String[] bearerToken = token.split("Bearer ");
         String jwtToken = bearerToken[1];
-        if(itemService.isAdmin(jwtToken)){
-            return new ResponseEntity<List<Basket>>(basketService.getAllBasket(),HttpStatus.OK);
+        if(!basketService.isTokenExpired(jwtToken) && itemService.isAdmin(jwtToken)){
+                return new ResponseEntity<List<Basket>>(basketService.getAllBasket(),HttpStatus.OK);
         }
         return new ResponseEntity<List<Basket>>(HttpStatus.UNAUTHORIZED);
     }
+
     @GetMapping("{username}")
     public ResponseEntity<Basket> getBasketByUsername(@PathVariable("username")String username, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
+
         String[] bearerToken = token.split("Bearer ");
         String jwtToken = bearerToken[1];
-        if(basketService.isUserForThisUsername(jwtToken, username)){
+        if(!basketService.isTokenExpired(jwtToken) && basketService.isUserForThisUsername(jwtToken, username)){
             return new ResponseEntity<Basket>(basketService.getBasketByUsername(username), HttpStatus.OK);
         }
         return new ResponseEntity<Basket>(HttpStatus.UNAUTHORIZED);
@@ -45,22 +49,22 @@ public class BasketResource {
 
     @PostMapping
     public ResponseEntity<Basket> add(@RequestBody Basket basket, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
-        // TODO Verifier la validiter du token avec le BasketService
+
         String[] bearerToken = token.split("Bearer ");
         String jwtToken = bearerToken[1];
-        if(basketService.isUserForThisUsername(jwtToken, basket.getUsername())){
+        if(!basketService.isTokenExpired(jwtToken) && basketService.isUserForThisUsername(jwtToken, basket.getUsername())){
             basketService.addBasket(basket);
-            return new ResponseEntity<Basket>(basket, HttpStatus.OK);
+            return new ResponseEntity<Basket>(basket, HttpStatus.CREATED);
         }
         return new ResponseEntity<Basket>(HttpStatus.UNAUTHORIZED);
     }
 
     @PutMapping
     public ResponseEntity<Basket> update(@RequestBody Basket basket,  @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
-        // TODO Verifier la validiter du token avec le BasketService
+
         String[] bearerToken = token.split("Bearer ");
         String jwtToken = bearerToken[1];
-        if(basketService.isUserForThisUsername(jwtToken, basket.getUsername())){
+        if(!basketService.isTokenExpired(jwtToken) && basketService.isUserForThisUsername(jwtToken, basket.getUsername())){
             basketService.update(basket);
             return new ResponseEntity<Basket>(basket, HttpStatus.OK);
         }
@@ -69,15 +73,14 @@ public class BasketResource {
 
     @DeleteMapping("{username}")
     public ResponseEntity<String> delete(@PathVariable String username,  @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
-        // TODO Verifier la validiter du token avec le BasketService
+
         String[] bearerToken = token.split("Bearer ");
         String jwtToken = bearerToken[1];
-        if(basketService.isUserForThisUsername(jwtToken, username)){
+        if(!basketService.isTokenExpired(jwtToken) && basketService.isUserForThisUsername(jwtToken, username)){
             basketService.delete(username);
             return new ResponseEntity<String>("Deleting Basket for this "+username, HttpStatus.OK);
         }
-        return new ResponseEntity<String>("Error in your Token", HttpStatus.UNAUTHORIZED);
-
+        return new ResponseEntity<String>("Error with your Token", HttpStatus.UNAUTHORIZED);
     }
 
 

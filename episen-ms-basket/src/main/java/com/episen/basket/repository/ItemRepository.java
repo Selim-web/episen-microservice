@@ -23,7 +23,11 @@ public class ItemRepository {
         return new ArrayList<>(itemInMemory.values());
     }
 
-    public Item getItemByGtn(Integer gtn) {
+    public boolean isItemInMemory(Item item){
+        return itemInMemory.containsKey(item.getGtn().toString());
+    }
+
+    public Item getItemByGtn(Long gtn) {
         System.out.println("Get Item by gtn -> item : " + gtn);
         return itemInMemory.get(gtn.toString());
     }
@@ -33,11 +37,9 @@ public class ItemRepository {
         itemInMemory.put(itemToUpdate.getGtn().toString(),itemToUpdate);
     }
 
-    public void deleteItem(Integer gtnToRemove){
+    public void deleteItem(Long gtnToRemove){
         System.out.println("Remove Item by gtn -> item : " + gtnToRemove);
         itemInMemory.remove(gtnToRemove.toString());
     }
-
-
 
 }

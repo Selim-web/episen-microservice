@@ -2,7 +2,7 @@ package com.episen.basket.model;
 
 public class Item {
 
-    private Integer gtn;
+    private Long gtn;
 
     private String label;
 
@@ -12,7 +12,7 @@ public class Item {
 
     private Integer quantity;
 
-    public Item(Integer gtn, String label, Double unitPrice, Double vat, Integer quantity) {
+    public Item(Long gtn, String label, Double unitPrice, Double vat, Integer quantity) {
         this.gtn = gtn;
         this.label = label;
         this.unitPrice = unitPrice;
@@ -20,11 +20,11 @@ public class Item {
         this.quantity = quantity;
     }
 
-    public Integer getGtn() {
+    public Long getGtn() {
         return gtn;
     }
 
-    public void setGtn(Integer gtn) {
+    public void setGtn(Long gtn) {
         this.gtn = gtn;
     }
 

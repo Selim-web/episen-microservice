@@ -18,17 +18,26 @@ public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
-    public Item getItemByGtn(Integer gtn){
+    public Item getItemByGtn(Long gtn){
         Item item = itemRepository.getItemByGtn(gtn);
         if(item == null){
             throw new RuntimeException("Item not found");
         }
-
         return item;
     }
 
     public List<Item> getAllItems(){
         return itemRepository.gettAllItems();
+    }
+
+    public boolean isItemInMemory(List<Item> itemList) {
+        boolean isKeyPresent = true;
+        for (Item item : itemList) {
+            if (!itemRepository.isItemInMemory(item)) {
+                isKeyPresent = false;
+            }
+        }
+        return isKeyPresent;
     }
 
     public void addItem(Item item){
@@ -38,7 +47,6 @@ public class ItemService {
         if(itemRepository.getItemByGtn(item.getGtn()) != null ){
             throw new RuntimeException("Item already exist");
         }
-
         itemRepository.addItem(item);
     }
 
@@ -49,7 +57,7 @@ public class ItemService {
         itemRepository.updateItem(itemToUpdate);
     }
 
-    public void delete(Integer gtntoDelete){
+    public void delete(Long gtntoDelete){
         if(null == itemRepository.getItemByGtn(gtntoDelete)){
             throw new RuntimeException("Item not found");
         }
@@ -57,7 +65,6 @@ public class ItemService {
     }
 
     public boolean isAdmin(String token) throws ParseException {
-
         JWTClaimsSet jwtClaimsSet = getClaimsSet(token);
         List<String> authUserRoles = (List<String>) jwtClaimsSet.getClaim("ROLES");
         return authUserRoles.contains("ADMIN");
@@ -67,8 +74,5 @@ public class ItemService {
         JWSObject plainObject = JWSObject.parse(jwtToken);
         return JWTClaimsSet.parse(plainObject.getPayload().toJSONObject());
     }
-
-
-
 
 }

@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
@@ -101,7 +102,21 @@ public class UserService {
 		return authUserRoles.contains("ADMIN");
 	}
 
+	private Date getExpirationDateFromToken(String token) throws ParseException {
+
+		JWTClaimsSet jwtClaimsSet = getClaimsSet(token);
+		Date date = (Date) jwtClaimsSet.getClaim("exp");
+		return date;
+	}
+
+	public Boolean isTokenExpired(String token) throws ParseException {
+
+		final Date expiration = getExpirationDateFromToken(token);
+		return expiration.before(new Date());
+	}
+
 	private JWTClaimsSet getClaimsSet(String jwtToken) throws ParseException {
+
 		JWSObject plainObject = JWSObject.parse(jwtToken);
 		return JWTClaimsSet.parse(plainObject.getPayload().toJSONObject());
 	}
