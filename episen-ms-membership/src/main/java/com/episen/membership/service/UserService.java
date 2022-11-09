@@ -85,7 +85,7 @@ public class UserService {
 		String jwtToken = "";
 		User currentUser = getByUsername(user.getUsername());
 		if(BCrypt.checkpw(user.getPassword(),currentUser.getPassword())){
-			System.out.println("user authenticate");
+			System.out.println("user authenticate -> username : "+currentUser.getUsername());
 			jwtToken = jwTokenGenerator.generateToken(currentUser.getUsername(), currentUser.getRoles());
 		}
 		else {

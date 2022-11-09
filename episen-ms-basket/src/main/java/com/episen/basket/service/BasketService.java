@@ -33,7 +33,6 @@ public class BasketService {
         if(basketRepository.getBasketByUsername(basket.getUsername()) != null ){
             throw new RuntimeException("Basket already exist");
         }
-        // TODO Verifier que les items sont dans ItemInMemory before adding in basket
         if(itemService.isItemInMemory(basket.getItemList())){
             basketRepository.addBasket(basket);
         }
@@ -52,13 +51,13 @@ public class BasketService {
 
     public void update(Basket basketToUpdate){
         if(null == basketRepository.getBasketByUsername(basketToUpdate.getUsername())){
-            throw new RuntimeException("Item not found");
+            throw new RuntimeException("Basket not found");
         }
         if(itemService.isItemInMemory(basketToUpdate.getItemList())){
             basketRepository.updateBasket(basketToUpdate);
         }
         else {
-            throw new RuntimeException("Item not found");
+            System.out.println("Item not present in Memory");
         }
 
     }

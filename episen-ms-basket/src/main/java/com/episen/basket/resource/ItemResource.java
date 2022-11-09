@@ -23,12 +23,13 @@ public class ItemResource {
     @Autowired
     private BasketService basketService;
 
+    // ALL USER
     @GetMapping
     public ResponseEntity<List<Item>> getAllItems(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
 
         String[] bearerToken = token.split("Bearer ");
         String jwtToken = bearerToken[1];
-        if(!basketService.isTokenExpired(jwtToken) && itemService.isAdmin(jwtToken)){
+        if(!basketService.isTokenExpired(jwtToken)){
             return new ResponseEntity<List<Item>>(itemService.getAllItems(), HttpStatus.OK);
         }
         return new ResponseEntity<List<Item>>(HttpStatus.UNAUTHORIZED);

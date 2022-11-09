@@ -78,14 +78,9 @@ public class BasketResource {
         String jwtToken = bearerToken[1];
         if(!basketService.isTokenExpired(jwtToken) && basketService.isUserForThisUsername(jwtToken, username)){
             basketService.delete(username);
-            return new ResponseEntity<String>("Deleting Basket for this "+username, HttpStatus.OK);
+            return new ResponseEntity<String>("Deleting Basket of "+username, HttpStatus.OK);
         }
         return new ResponseEntity<String>("Error with your Token", HttpStatus.UNAUTHORIZED);
     }
-
-
-
-
-
 
 }

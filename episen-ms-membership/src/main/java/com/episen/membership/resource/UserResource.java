@@ -64,24 +64,28 @@ public class UserResource {
 	}
 	
 	@PutMapping
-	public void put(@RequestBody User user, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
+	public ResponseEntity<User> put(@RequestBody User user, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
 
 		String[] bearerToken = token.split("Bearer ");
 		String jwtToken = bearerToken[1];
 		if(!userService.isTokenExpired(jwtToken) && userService.isAdmin(jwtToken)){
 			userService.update(user);
+			return new ResponseEntity<User>(user, HttpStatus.OK);
 		}
+		return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
 	}
 	
 	
 	@DeleteMapping("{username}")
-	public void delete(@PathVariable("username") String username, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
+	public ResponseEntity<User> delete(@PathVariable("username") String username, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
 
 		String[] bearerToken = token.split("Bearer ");
 		String jwtToken = bearerToken[1];
 		if(!userService.isTokenExpired(jwtToken) && userService.isAdmin(jwtToken)){
 			userService.delete(username);
+			return new ResponseEntity<User>(HttpStatus.OK);
 		}
+		return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
 	}
 
 }
