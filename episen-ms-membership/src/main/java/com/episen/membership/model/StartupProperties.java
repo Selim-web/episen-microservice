@@ -1,6 +1,7 @@
 package com.episen.membership.model;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +16,16 @@ public class StartupProperties {
     private String email;
 
     private String role;
+
+    private String key;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public String getUsername() {
         return username;

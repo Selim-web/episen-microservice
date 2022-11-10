@@ -1,6 +1,3 @@
-
-
-
 # Generate Private Key
 
 Un fichier .p12 combine à la fois un certificat et une clé privé. Il faut donc commencer par générer ces 2 éléments:
@@ -23,4 +20,4 @@ Une fois le fichier server.p12 générer on peut le vérifier avec la commande:
 $ openssl pkcs12 -in server.p12 -noout -info
 
 
-# API
+# API Gestion des utilisateurs et authorisation 

@@ -50,6 +50,12 @@ public class ItemService {
         itemRepository.addItem(item);
     }
 
+    public void addItems(List<Item> itemList) {
+        for(Item item: itemList){
+            this.addItem(item);
+        }
+    }
+
     public void update(Item itemToUpdate){
         if(null == itemRepository.getItemByGtn(itemToUpdate.getGtn())){
             throw new RuntimeException("Item not found");

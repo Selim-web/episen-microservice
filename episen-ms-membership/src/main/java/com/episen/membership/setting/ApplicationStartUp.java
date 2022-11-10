@@ -21,27 +21,15 @@ public class ApplicationStartUp {
     @Autowired
     private StartupProperties startupProperties;
 
-//    @Bean
-//    public CommandLineRunner loadData() {
-//        return (args) -> {
-//            User adminUser = new User(startupProperties.getUsername(),
-//                    BCrypt.hashpw(startupProperties.getPassword(), BCrypt.gensalt()),
-//                    startupProperties.getEmail(),
-//                    Arrays.asList("ADMIN"));
-//            userRepository.add(adminUser);
-//        };
-//    }
-
     @Bean
     public CommandLineRunner loadData() {
         return (args) -> {
-            User adminUser = new User("superadmin",
-                   "superadmin",
-                    "superadmin@episen.fr",
+            User adminUser = new User(startupProperties.getUsername(),
+                    startupProperties.getPassword(),
+                    startupProperties.getEmail(),
                     List.of("ADMIN"));
             userRepository.add(adminUser);
         };
     }
-
 
 }

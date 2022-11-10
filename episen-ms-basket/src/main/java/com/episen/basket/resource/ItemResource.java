@@ -49,6 +49,19 @@ public class ItemResource {
     }
 
     // ONLY ADMIN USER
+    @PostMapping("/items")
+    public ResponseEntity<List<Item>> addItems(@RequestBody List<Item> itemList, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
+
+        String[] bearerToken = token.split("Bearer ");
+        String jwtToken = bearerToken[1];
+        if(!basketService.isTokenExpired(jwtToken) && itemService.isAdmin(jwtToken)){
+            itemService.addItems(itemList);
+            return new ResponseEntity<List<Item>>(itemList, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<List<Item>>(HttpStatus.UNAUTHORIZED);
+    }
+
+    // ONLY ADMIN USER
     @PutMapping
     public ResponseEntity<Item> update(@RequestBody Item itemToUpdate, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) throws ParseException {
 
