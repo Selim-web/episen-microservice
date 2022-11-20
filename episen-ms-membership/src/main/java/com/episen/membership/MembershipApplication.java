@@ -12,6 +12,7 @@ public class MembershipApplication {
 		
 		SpringApplication.run(MembershipApplication.class, args);
 		System.out.println("Start membership ms project");
+		// sout = > system.out.println
 	
 	}
 }
